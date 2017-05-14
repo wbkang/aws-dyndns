@@ -24,10 +24,14 @@ OLD_IP=""
 TS=0
 
 while [ 1 ] ; do
+    # exit if REFRESH_TIME < 0 
+    if [[ "$TS" -lt 0 ]]; then
+        break
+    fi
 	sleep "${TS}s"
 	TS="$REFRESH_TIME" # first run is without a sleep
 
-	OLD_IP="$(dig +short "$DNS_FQDN")"
+	OLD_IP="$(dig +short "$DNS_FQDN" @8.8.8.8)"
 	NEW_IP="$(curl -sS --max-time 5 https://api.ipify.org)"
 
 	if ! validate_ip "$OLD_IP" ; then
